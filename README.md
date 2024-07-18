@@ -12,9 +12,7 @@ To run:
 bun dev
 ```
 
-This project was created using `bun init` in bun v1.1.13. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
-
-If we install the prometheus plugin, subscriptions fail with the error:
+- If we install the prometheus plugin, subscriptions fail with the error:
 
 ```bash
 65 |             return undefined;
@@ -35,9 +33,11 @@ TypeError: WeakMap keys must be objects or non-registered symbols
 
 ```
 
-If we comment out the plugin, everything works as expected.
+- If we comment out the plugin, everything works as expected.
 
-If we use the plugins from `@envelop/prometheus`, the subscriptions work again, but <http://localhost:4000/metrics> gives a 404.
+- If we use the plugins from `@envelop/prometheus`, the subscriptions work again, but <http://localhost:4000/metrics> gives a 404, normally they should just be compatible: https://the-guild.dev/graphql/yoga-server/docs/features/envelop-plugins#using-plugins. 
+
+- Using this example for setting up graphql-ws with bun: https://github.com/dotansimha/graphql-yoga/blob/main/examples/bun-yoga-ws/src/index.ts
 
 ## Steps to reproduce
 
