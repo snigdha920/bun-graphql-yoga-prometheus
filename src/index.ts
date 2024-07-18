@@ -2,6 +2,7 @@ import { setTimeout as setTimeout$ } from 'node:timers/promises';
 import Bun, { type ServerWebSocket } from 'bun';
 import { makeHandler } from 'graphql-ws/lib/use/bun';
 import { createSchema, createYoga } from 'graphql-yoga';
+import { usePrometheus } from '@graphql-yoga/plugin-prometheus';
 
 const schema = createSchema({
   typeDefs: /* GraphQL */ `
@@ -35,6 +36,15 @@ const schema = createSchema({
 
 const yoga = createYoga({
   schema,
+  plugins: [
+    usePrometheus({
+      execute: true,
+      errors: true,
+      requestCount: true, // requires `execute` to be true as well
+      requestSummary: true, // requires `execute` to be true as well
+    })
+  ]
+  ,
   graphiql: {
     subscriptionsProtocol: 'WS', // use WebSockets instead of SSE
   },
