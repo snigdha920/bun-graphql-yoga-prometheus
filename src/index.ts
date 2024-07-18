@@ -3,6 +3,10 @@ import Bun, { type ServerWebSocket } from 'bun';
 import { makeHandler } from 'graphql-ws/lib/use/bun';
 import { createSchema, createYoga } from 'graphql-yoga';
 import { usePrometheus } from '@graphql-yoga/plugin-prometheus';
+import { execute, parse, specifiedRules, subscribe, validate } from 'graphql'
+import { envelop, useEngine } from '@envelop/core'
+import { usePrometheus as useEnvelopPrometheus } from '@envelop/prometheus'
+
 
 const schema = createSchema({
   typeDefs: /* GraphQL */ `
@@ -42,17 +46,23 @@ const yoga = createYoga({
       errors: true,
       requestCount: true, // requires `execute` to be true as well
       requestSummary: true, // requires `execute` to be true as well
-    })
-  ]
-  ,
+    }),
+    // useEngine({ parse, validate, specifiedRules, execute, subscribe }),
+    // useEnvelopPrometheus({
+    //   execute: true,
+    //   errors: true,
+    //   requestCount: true, // requires `execute` to be true as well
+    //   requestSummary: true, // requires `execute` to be true as well
+    // })
+  ],
   graphiql: {
     subscriptionsProtocol: 'WS', // use WebSockets instead of SSE
   },
 });
 
 export const websocketHandler = makeHandler<
-Record<string, unknown>,
-{ request: Request; socket: ServerWebSocket }
+  Record<string, unknown>,
+  { request: Request; socket: ServerWebSocket }
 >({
   schema,
   execute: args => (args.rootValue as any).execute(args),
