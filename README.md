@@ -38,3 +38,25 @@ TypeError: WeakMap keys must be objects or non-registered symbols
 If we comment out the plugin, everything works as expected.
 
 If we use the plugins from `@envelop/prometheus`, the subscriptions work again, but <http://localhost:4000/metrics> gives a 404.
+
+## Steps to reproduce
+
+1. Run  `bun dev`
+2. Go to <http://localhost:4000/graphql>
+3. Run the subscription: 
+
+```graphql
+subscription MySubscription {
+  dynamicLoading(loadTime: 10)
+}
+```
+
+4. You will see there is no data loading: 
+
+<img width="1624" alt="image" src="https://github.com/user-attachments/assets/110ff4d7-c060-4bd1-a012-db1a4b0e898d">
+
+5. Comment out the `usePrometheus` plugin, run the subscription again, works as expected
+
+<img width="1624" alt="image" src="https://github.com/user-attachments/assets/4c2d64f7-d579-4ab5-a1cf-0cff2d40743a">
+
+
