@@ -2,10 +2,7 @@ import { setTimeout as setTimeout$ } from 'node:timers/promises';
 import Bun, { type ServerWebSocket } from 'bun';
 import { makeHandler } from 'graphql-ws/lib/use/bun';
 import { createSchema, createYoga } from 'graphql-yoga';
-import { usePrometheus } from '@graphql-yoga/plugin-prometheus';
-import { execute, parse, specifiedRules, subscribe, validate } from 'graphql'
-import { envelop, useEngine } from '@envelop/core'
-import { usePrometheus as useEnvelopPrometheus } from '@envelop/prometheus'
+import { useMetricsPlugin } from './useMetricsPlugin';
 
 
 const schema = createSchema({
@@ -41,19 +38,12 @@ const schema = createSchema({
 const yoga = createYoga({
   schema,
   plugins: [
-    usePrometheus({
+    useMetricsPlugin({
       execute: true,
       errors: true,
       requestCount: true, // requires `execute` to be true as well
       requestSummary: true, // requires `execute` to be true as well
-    }),
-    // useEngine({ parse, validate, specifiedRules, execute, subscribe }),
-    // useEnvelopPrometheus({
-    //   execute: true,
-    //   errors: true,
-    //   requestCount: true, // requires `execute` to be true as well
-    //   requestSummary: true, // requires `execute` to be true as well
-    // })
+    })
   ],
   graphiql: {
     subscriptionsProtocol: 'WS', // use WebSockets instead of SSE
@@ -70,6 +60,7 @@ export const websocketHandler = makeHandler<
   onSubscribe: async (ctx, msg) => {
     const { schema, execute, subscribe, contextFactory, parse, validate } = yoga.getEnveloped({
       ...ctx,
+      request: ctx.extra.request,
       req: ctx.extra.request,
       socket: ctx.extra.socket,
       params: msg.payload,
