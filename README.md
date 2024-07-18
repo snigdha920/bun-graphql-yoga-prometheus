@@ -78,4 +78,6 @@ TypeError: WeakMap keys must be objects or non-registered symbols
 
 <img width="1624" alt="image" src="https://github.com/user-attachments/assets/4c2d64f7-d579-4ab5-a1cf-0cff2d40743a">
 
+## Working example
 
+Checkout the setup here for a working example: https://github.com/snigdha920/bun-graphql-yoga-prometheus/tree/custom-plugin
